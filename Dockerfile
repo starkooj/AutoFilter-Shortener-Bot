@@ -1,12 +1,14 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim
 
-RUN apt update && apt upgrade -y
-RUN apt install git -y
-COPY requirements.txt /requirements.txt
+WORKDIR /app
 
-RUN cd /
-RUN pip3 install -U pip && pip3 install -U -r requirements.txt
-RUN mkdir /Eva
-WORKDIR /Eva
-COPY start.sh /start.sh
-CMD ["/bin/bash", "/start.sh"]
+COPY . .
+
+RUN apt-get update --fix-missing && \
+    apt-get install -y git gcc && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["bash", "start.sh"]
